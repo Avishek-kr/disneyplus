@@ -103,7 +103,7 @@ const SignUp = styled.a`
 const Description = styled.p`
   color: hsla(0, 0%, 95.3%, 1);
   font-size: 14px;
-  margin: 0 0 24px;
+  margin: 24px 0 24px;
   line-height: 1.5;
   letter-spacing: 1.5px;
 `;
