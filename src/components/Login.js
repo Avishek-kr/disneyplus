@@ -1,13 +1,11 @@
-import styled from 'styled-components'
-import React from 'react'
+import styled from "styled-components";
 
 const Login = (props) => {
-    return  (
-         <Container> 
-         <Content>
+  return (
+    <Container>
+      <Content>
         <CTA>
           <CTALogoOne src="/images/cta-logo-one.svg" alt="" />
-          </CTA>
           <SignUp>GET ALL THERE</SignUp>
           <Description>
             Get Premier Access to Raya and the Last Dragon for an additional fee
@@ -15,12 +13,12 @@ const Login = (props) => {
             and The Disney Bundle will increase by $1.
           </Description>
           <CTALogoTwo src="/images/cta-logo-two.png" alt="" />
-       
+        </CTA>
         <BgImage />
       </Content>
     </Container>
-    )
-}
+  );
+};
 
 const Container = styled.section`
   overflow: hidden;
@@ -44,7 +42,6 @@ const Content = styled.div`
   height: 100%;
 `;
 
-
 const BgImage = styled.div`
   height: 100%;
   background-position: top;
@@ -63,18 +60,7 @@ const CTA = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin-bottom:2rem;
-  flex-wrap:wrap;
-  justify-content:center;
-  margin-top:0;
-  align-items:center;
-  text-align:center;
-  margin-right:auto;
-  margin-left:auto;
-  transition-timing-function:ease-out;
-  transition: opacity 0.2s;
-  width:100%;
-  `;
+`;
 
 const CTALogoOne = styled.img`
   margin-bottom: 12px;
@@ -95,6 +81,7 @@ const SignUp = styled.a`
   padding: 16.5px 0;
   border: 1px solid transparent;
   border-radius: 4px;
+
   &:hover {
     background-color: #0483ee;
   }
@@ -102,8 +89,8 @@ const SignUp = styled.a`
 
 const Description = styled.p`
   color: hsla(0, 0%, 95.3%, 1);
-  font-size: 14px;
-  margin: 24px 0 24px;
+  font-size: 11px;
+  margin: 0 0 24px;
   line-height: 1.5;
   letter-spacing: 1.5px;
 `;
@@ -116,6 +103,4 @@ const CTALogoTwo = styled.img`
   width: 100%;
 `;
 
-
-export default Login
- 
+export default Login;

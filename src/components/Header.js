@@ -4,71 +4,71 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { auth, provider } from "../firebase";
 import {
-    selectUserName,
-    selectUserPhoto,
-    setUserLoginDetails,
-    setSignOutState,
+  selectUserName,
+  selectUserPhoto,
+  setUserLoginDetails,
+  setSignOutState,
 } from "../features/user/userSlice";
 
 const Header = (props) => {
-    const dispatch = useDispatch();
-    const history = useHistory();
-    const userName = useSelector(selectUserName);
-    const userPhoto = useSelector(selectUserPhoto);
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const userName = useSelector(selectUserName);
+  const userPhoto = useSelector(selectUserPhoto);
 
-    useEffect(() => {
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                setUser(user);
-                history.push("/home");
-            }
+  useEffect(() => {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        setUser(user);
+        history.push("/home");
+      }
+    });
+  }, [userName]);
+
+  const handleAuth = () => {
+    if (!userName) {
+      auth
+        .signInWithPopup(provider)
+        .then((result) => {
+          setUser(result.user);
+        })
+        .catch((error) => {
+          alert(error.message);
         });
-    }, [userName]);
+    } else if (userName) {
+      auth
+        .signOut()
+        .then(() => {
+          dispatch(setSignOutState());
+          history.push("/");
+        })
+        .catch((err) => alert(err.message));
+    }
+  };
 
-    const handleAuth = () => {
-        if (!userName) {
-            auth
-                .signInWithPopup(provider)
-                .then((result) => {
-                    setUser(result.user);
-                })
-                .catch((error) => {
-                    alert(error.message);
-                });
-        } else if (userName) {
-            auth
-                .signOut()
-                .then(() => {
-                    dispatch(setSignOutState());
-                    history.push("/");
-                })
-                .catch((err) => alert(err.message));
-        }
-    };
+  const setUser = (user) => {
+    dispatch(
+      setUserLoginDetails({
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL,
+      })
+    );
+  };
 
-    const setUser = (user) => {
-        dispatch(
-            setUserLoginDetails({
-                name: user.displayName,
-                email: user.email,
-                photo: user.photoURL,
-            })
-        );
-    };
+  return (
+    <Nav>
+      <Logo>
+        <img src="/images/logo.svg" alt="Disney+" />
+      </Logo>
 
-    return (
-        <Nav>
-            <Logo>
-                <img src="/images/logo.svg" alt="Disney+" />
-            </Logo>
-
-            {!userName ? (
-                <Login onClick={handleAuth}>Login</Login>
-            ) : (
-                <>
-                    <NavMenu>
-
-                        <a href="/home">
+      {!userName ? (
+        
+        <Login onClick={handleAuth}><Subscribe>SUBSCRIBE</Subscribe> Login</Login>
+      ) : (
+        <>
+          <NavMenu>
+          <a href="/home">
                             <span>TV</span>
                         </a>
                         <a>
@@ -90,21 +90,20 @@ const Header = (props) => {
                             <span style={{ color: "#FFAA05", fontFamily: "cursive", fontWeight: "bold" }}>KIDS</span>
                         </a>
 
-                    </NavMenu>
-                    <SignUp>GET ALL THERE</SignUp>
-                    {/* <SignOut>
-                        <UserImg src={userPhoto} alt={userName} />
-                        <DropDown>
-                            <span onClick={handleAuth}>Sign out</span>
-                        </DropDown>
-                    </SignOut> */}
-                </>
-            )}
-        </Nav>
-    );
+          </NavMenu>
+          <SignOut>
+            <UserImg src={userPhoto} alt={userName} />
+            <DropDown>
+              <span onClick={handleAuth}>Sign out</span>
+            </DropDown>
+            
+          </SignOut>
+          
+        </>
+      )}
+    </Nav>
+  );
 };
-
-
 
 const Nav = styled.nav`
   position: fixed;
@@ -156,6 +155,8 @@ const NavMenu = styled.div`
       padding: 2px 10px;
       white-space: nowrap;
       position: relative;
+      cursor: pointer;
+
       &:before {
         background-color: rgb(249, 249, 249);
         border-radius: 0px 0px 4px 4px;
@@ -173,6 +174,7 @@ const NavMenu = styled.div`
         width: auto;
       }
     }
+
     &:hover {
       span:before {
         transform: scaleX(1);
@@ -181,12 +183,11 @@ const NavMenu = styled.div`
       }
     }
   }
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
 
-const NavRight = styled.div``
+  /* @media (max-width: 768px) {
+    display: none;
+  } */
+`;
 
 const Subscribe = styled.a`
   font-weight: 900;
@@ -214,6 +215,7 @@ const Login = styled.a`
   border-radius: 4px;
   transition: all 0.2s ease 0s;
   font-weight:bold;
+  cursor: pointer;
   /* &:hover {
     background-color: #f9f9f9;
     color: #000;
@@ -222,10 +224,46 @@ const Login = styled.a`
 `;
 
 
+const UserImg = styled.img`
+  height: 100%;
+`;
 
+const DropDown = styled.div`
+  position: absolute;
+  top: 48px;
+  right: 0px;
+  background: rgb(19, 19, 19);
+  border: 1px solid rgba(151, 151, 151, 0.34);
+  border-radius: 4px;
+  box-shadow: rgb(0 0 0 / 50%) 0px 0px 18px 0px;
+  padding: 10px;
+  font-size: 14px;
+  letter-spacing: 3px;
+  width: 100px;
+  opacity: 0;
+`;
 
-//    @media (max-width: 768px) {
-//     display: none;
-//   } 
+const SignOut = styled.div`
+  position: relative;
+  height: 48px;
+  width: 48px;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
 
-export default Header
+  ${UserImg} {
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+  }
+
+  &:hover {
+    ${DropDown} {
+      opacity: 1;
+      transition-duration: 1s;
+    }
+  }
+`;
+
+export default Header;
