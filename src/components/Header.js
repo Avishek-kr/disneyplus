@@ -1,74 +1,110 @@
-  
 import { useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { auth, provider } from "../firebase";
 import {
-  selectUserName,
-  selectUserPhoto,
-  setUserLoginDetails,
-  setSignOutState,
+    selectUserName,
+    selectUserPhoto,
+    setUserLoginDetails,
+    setSignOutState,
 } from "../features/user/userSlice";
 
 const Header = (props) => {
+    const dispatch = useDispatch();
+    const history = useHistory();
+    const userName = useSelector(selectUserName);
+    const userPhoto = useSelector(selectUserPhoto);
+
+    useEffect(() => {
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                setUser(user);
+                history.push("/home");
+            }
+        });
+    }, [userName]);
+
     const handleAuth = () => {
-        // if (!userName) {
-          auth
-            .signInWithPopup(provider)
-            .then((result) => {
-            //   setUser(result.user);
-            console.log(result);
-            })
-            .catch((error) => {
-              alert(error.message);
-            });
+        if (!userName) {
+            auth
+                .signInWithPopup(provider)
+                .then((result) => {
+                    setUser(result.user);
+                })
+                .catch((error) => {
+                    alert(error.message);
+                });
+        } else if (userName) {
+            auth
+                .signOut()
+                .then(() => {
+                    dispatch(setSignOutState());
+                    history.push("/");
+                })
+                .catch((err) => alert(err.message));
         }
+    };
+
+    const setUser = (user) => {
+        dispatch(
+            setUserLoginDetails({
+                name: user.displayName,
+                email: user.email,
+                photo: user.photoURL,
+            })
+        );
+    };
+
     return (
         <Nav>
-        <Logo>
-        <img src="/images/logo.svg" alt="Disney+" />
-      </Logo>
-      <>
-      <NavMenu>
-            <a href="/home">
-              <span>TV</span>
-            </a>
-            <a>
-              <span>Movies</span>
-            </a>
-            <a>
-              <span>Sports</span>
-            </a>
-            <a>
-              <span>News</span>
-            </a>
-            <a>
-              <span>Premium</span>
-            </a>
-            <a>
-              <span>Disney+</span>
-            </a>
-            <a className="kids">
-            <span style={{color:"#FFAA05", fontFamily:"cursive", fontWeight:"bold"}}>KIDS</span>
-            </a>
-            </NavMenu>
-          {/* <SignOut>
-            <UserImg src={userPhoto} alt={userName} />
-            <DropDown>
-              <span onClick={handleAuth}>Sign out</span>
-            </DropDown>
-          </SignOut> */}
-          <NavRight>
-          <Subscribe>SUBSCRIBE</Subscribe>
-            <Login>Login</Login>
-            </NavRight>
-            
-        </>
-      {/* )} */}
+            <Logo>
+                <img src="/images/logo.svg" alt="Disney+" />
+            </Logo>
+
+            {!userName ? (
+                <Login onClick={handleAuth}>Login</Login>
+            ) : (
+                <>
+                    <NavMenu>
+
+                        <a href="/home">
+                            <span>TV</span>
+                        </a>
+                        <a>
+                            <span>Movies</span>
+                        </a>
+                        <a>
+                            <span>Sports</span>
+                        </a>
+                        <a>
+                            <span>News</span>
+                        </a>
+                        <a>
+                            <span>Premium</span>
+                        </a>
+                        <a>
+                            <span>Disney+</span>
+                        </a>
+                        <a className="kids">
+                            <span style={{ color: "#FFAA05", fontFamily: "cursive", fontWeight: "bold" }}>KIDS</span>
+                        </a>
+
+                    </NavMenu>
+                    <SignUp>GET ALL THERE</SignUp>
+                    {/* <SignOut>
+                        <UserImg src={userPhoto} alt={userName} />
+                        <DropDown>
+                            <span onClick={handleAuth}>Sign out</span>
+                        </DropDown>
+                    </SignOut> */}
+                </>
+            )}
         </Nav>
-    )
-}
+    );
+};
+
+
 
 const Nav = styled.nav`
   position: fixed;
