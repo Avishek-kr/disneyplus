@@ -61,6 +61,9 @@ const Header = (props) => {
       <Logo>
         <img src="/images/logo.svg" alt="Disney+" />
       </Logo>
+      <Owner>
+        <img src="/images/Avishek.svg" alt="Disney+" />
+      </Owner>
 
       {!userName ? (
         
@@ -187,6 +190,25 @@ const NavMenu = styled.div`
   /* @media (max-width: 768px) {
     display: none;
   } */
+`;
+
+const Owner= styled.div`
+ /* margin-top: -15px; */
+  /* margin-left:1rem; */
+  width: 100px;
+  max-height: 100px;
+  font-size: 0px;
+  transition: 0.3s ease-out;
+  &:hover{
+    transform:scale(1.2);
+  }
+  img {
+    display: block;
+    width: 100%;
+}
+ @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const Subscribe = styled.a`
